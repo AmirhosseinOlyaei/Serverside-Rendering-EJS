@@ -1,12 +1,25 @@
+// app.js
 const express = require("express");
 require("express-async-errors");
+require("dotenv").config(); // Load environment variables from .env file
+const session = require("express-session");
+const bodyParser = require("body-parser");
 
 const app = express();
 
 app.set("view engine", "ejs");
-app.use(require("body-parser").urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: true }));
 
-// secret word handling
+// Session middleware
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET, // Use the session secret from the environment variables
+    resave: false,
+    saveUninitialized: true,
+  })
+);
+
+// Secret word handling
 let secretWord = "syzygy";
 app.get("/secretWord", (req, res) => {
   res.render("secretWord", { secretWord });
