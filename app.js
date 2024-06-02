@@ -44,11 +44,11 @@ app.get("/secretWord", (req, res) => {
   if (!req.session.secretWord) {
     req.session.secretWord = "syzygy";
   }
-  res.render("secretWord", {
-    secretWord: req.session.secretWord,
-    messages: req.flash(),
-  });
+  res.locals.info = req.flash("info");
+  res.locals.errors = req.flash("error");
+  res.render("secretWord", { secretWord: req.session.secretWord });
 });
+
 app.post("/secretWord", (req, res) => {
   if (req.body.secretWord.toUpperCase()[0] == "P") {
     req.flash("error", "That word won't work!");
