@@ -1,0 +1,19 @@
+{
+  "name": "jobs-ejs",
+  "version": "1.0.0",
+  "description": "serverside-rendering-ejs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/AmirhosseinOlyaei/Serverside-Rendering-EJS.git"
+  },
+  "author": "Amirhossein Olyaei",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AmirhosseinOlyaei/Serverside-Rendering-EJS/issues"
+  },
+  "homepage": "https://github.com/AmirhosseinOlyaei/Serverside-Rendering-EJS#readme"
+}
