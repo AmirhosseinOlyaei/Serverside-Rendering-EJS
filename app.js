@@ -20,12 +20,14 @@ app.use(
 );
 
 // Secret word handling
-let secretWord = "syzygy";
 app.get("/secretWord", (req, res) => {
-  res.render("secretWord", { secretWord });
+  if (!req.session.secretWord) {
+    req.session.secretWord = "syzygy";
+  }
+  res.render("secretWord", { secretWord: req.session.secretWord });
 });
 app.post("/secretWord", (req, res) => {
-  secretWord = req.body.secretWord;
+  req.session.secretWord = req.body.secretWord;
   res.redirect("/secretWord");
 });
 
