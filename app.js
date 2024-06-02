@@ -36,15 +36,27 @@ if (app.get("env") === "production") {
 
 app.use(session(sessionParams));
 
+// Flash messaging setup
+app.use(require("connect-flash")());
+
 // Secret word handling
 app.get("/secretWord", (req, res) => {
   if (!req.session.secretWord) {
     req.session.secretWord = "syzygy";
   }
-  res.render("secretWord", { secretWord: req.session.secretWord });
+  res.render("secretWord", {
+    secretWord: req.session.secretWord,
+    messages: req.flash(),
+  });
 });
 app.post("/secretWord", (req, res) => {
-  req.session.secretWord = req.body.secretWord;
+  if (req.body.secretWord.toUpperCase()[0] == "P") {
+    req.flash("error", "That word won't work!");
+    req.flash("error", "You can't use words that start with p.");
+  } else {
+    req.session.secretWord = req.body.secretWord;
+    req.flash("info", "The secret word was changed.");
+  }
   res.redirect("/secretWord");
 });
 
