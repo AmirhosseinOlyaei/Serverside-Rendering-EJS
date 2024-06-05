@@ -1,8 +1,8 @@
-// models/Job.js
+// models/Job.mjs
 import mongoose from "mongoose";
-const { Schema } = mongoose;
+// const { Schema } = mongoose;
 
-const jobSchema = new Schema(
+const jobSchema = new mongoose.Schema(
   {
     company: {
       type: String,

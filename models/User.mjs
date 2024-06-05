@@ -1,4 +1,4 @@
-// models/User.js
+// models/User.mjs
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -45,4 +45,6 @@ userSchema.methods.comparePassword = async function (candidatePassword) {
   return isMatch;
 };
 
-export default mongoose.model("User", userSchema);
+// export default mongoose.model("User", userSchema);
+const User = mongoose.model("User", userSchema);
+export default User;

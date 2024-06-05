@@ -1,6 +1,9 @@
-// controllers/sessionController.js
-const User = require("../models/User");
-const parseVErr = require("../util/parseValidationErr");
+// controllers/sessionController.mjs
+// const User = require("../models/User");
+// const User = import("../models/User");
+// const parseVErr = require("../util/parseValidationErrs");
+import User from "../models/User.mjs";
+import parseVErr from "../util/parseValidationErrs.mjs";
 
 const registerShow = (req, res) => {
   res.render("register");
@@ -13,6 +16,7 @@ const registerDo = async (req, res, next) => {
   }
   try {
     await User.create(req.body);
+    // await User;
   } catch (e) {
     if (e.constructor.name === "ValidationError") {
       parseVErr(e, req);
@@ -45,9 +49,4 @@ const logonShow = (req, res) => {
   });
 };
 
-module.exports = {
-  registerShow,
-  registerDo,
-  logoff,
-  logonShow,
-};
+export { registerShow, registerDo, logoff, logonShow };

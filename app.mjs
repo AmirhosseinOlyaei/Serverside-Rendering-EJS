@@ -1,10 +1,20 @@
-// app.js
-const express = require("express");
-require("express-async-errors");
-require("dotenv").config(); // Load environment variables from .env file
-const session = require("express-session");
-const bodyParser = require("body-parser");
-const MongoDBStore = require("connect-mongodb-session")(session);
+// app.mjs
+// const express = require("express");
+import express from "express";
+// require("express-async-errors");
+import "express-async-errors";
+// const session = require("express-session");
+import session from "express-session";
+// const bodyParser = require("body-parser");
+import bodyParser from "body-parser";
+// const MongoDBStore = require("connect-mongodb-session")(session);
+import MongoDBStore from "connect-mongodb-session";
+import connectDB from "./db/connect.js";
+import storeLocals from "./middleware/storeLocals.mjs";
+import sessionRoutes from "./routes/sessionRoutes.mjs";
+
+// require("dotenv").config(); // Load environment variables from .env file
+import "dotenv/config";
 
 const app = express();
 
@@ -13,7 +23,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 const url = process.env.MONGO_URI;
 
-const store = new MongoDBStore({
+const MongoDBStoreInstance = MongoDBStore(session);
+const store = new MongoDBStoreInstance({
   uri: url,
   collection: "mySessions",
 });
@@ -37,12 +48,16 @@ if (app.get("env") === "production") {
 app.use(session(sessionParams));
 
 // Flash messaging setup
-app.use(require("connect-flash")());
-app.use(require("./middleware/storeLocals.cjs"));
+// app.use(require("connect-flash")());
+import flash from "connect-flash";
+app.use(flash());
+// app.use(require("./middleware/storeLocals.mjs"));
+app.use(storeLocals);
 app.get("/", (req, res) => {
   res.render("index");
 });
-app.use("/sessions", require("./routes/sessionRoutes"));
+// app.use("/sessions", require("./routes/sessionRoutes.mjs"));
+app.use("/sessions", sessionRoutes);
 
 // Secret word handling
 app.get("/secretWord", (req, res) => {
@@ -78,7 +93,8 @@ const port = process.env.PORT || 3000;
 
 const start = async () => {
   try {
-    await require("./db/connect")(process.env.MONGO_URI);
+    // await require("./db/connect")(process.env.MONGO_URI);
+    await connectDB(process.env.MONGO_URI);
     app.listen(port, () =>
       console.log(`Server is listening on port ${port}...`)
     );

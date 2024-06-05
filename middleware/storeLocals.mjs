@@ -1,4 +1,4 @@
-// middleware/storeLocals.js
+// middleware/storeLocals.mjs
 const storeLocals = (req, res, next) => {
   if (req.user) {
     res.locals.user = req.user;
@@ -10,4 +10,5 @@ const storeLocals = (req, res, next) => {
   next();
 };
 
-module.exports = storeLocals;
+// module.exports = storeLocals;
+export default storeLocals;

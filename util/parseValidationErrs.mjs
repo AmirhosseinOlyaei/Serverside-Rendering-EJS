@@ -1,3 +1,4 @@
+// util/parseValidationErrs.mjs
 const parseValidationErrors = (e, req) => {
   const keys = Object.keys(e.errors);
   keys.forEach((key) => {
@@ -5,4 +6,4 @@ const parseValidationErrors = (e, req) => {
   });
 };
 
-module.exports = parseValidationErrors;
+export default parseValidationErrors;

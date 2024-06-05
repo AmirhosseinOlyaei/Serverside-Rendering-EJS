@@ -1,14 +1,21 @@
-// routes/sessionRoutes.js
-const express = require("express");
+// routes/sessionRoutes.mjs
+// const express = require("express");
+import express from "express";
 // const passport = require("passport");
 const router = express.Router();
 
-const {
+// const {
+//   logonShow,
+//   registerShow,
+//   registerDo,
+//   logoff,
+// } = require("../controllers/sessionController.mjs");
+import {
   logonShow,
   registerShow,
   registerDo,
   logoff,
-} = require("../controllers/sessionController");
+} from "../controllers/sessionController.mjs";
 
 router.route("/register").get(registerShow).post(registerDo);
 router
@@ -26,4 +33,4 @@ router
   );
 router.route("/logoff").post(logoff);
 
-module.exports = router;
+export default router;
