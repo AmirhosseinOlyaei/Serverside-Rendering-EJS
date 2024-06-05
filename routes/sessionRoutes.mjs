@@ -1,7 +1,7 @@
 // routes/sessionRoutes.mjs
 // const express = require("express");
 import express from "express";
-// const passport = require("passport");
+import passport from "passport";
 const router = express.Router();
 
 // const {
@@ -27,9 +27,6 @@ router
       failureRedirect: "/sessions/logon",
       failureFlash: true,
     })
-    (req, res) => {
-      res.send("Not yet implemented.");
-    }
   );
 router.route("/logoff").post(logoff);
 
