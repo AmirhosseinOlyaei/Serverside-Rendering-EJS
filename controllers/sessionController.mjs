@@ -39,14 +39,4 @@ const logoff = (req, res) => {
   });
 };
 
-const logonShow = (req, res) => {
-  if (req.user) {
-    return res.redirect("/");
-  }
-  res.render("logon", {
-    errors: req.flash("error"),
-    info: req.flash("info"),
-  });
-};
-
-export { registerShow, registerDo, logoff, logonShow };
+export { registerShow, registerDo, logoff };
