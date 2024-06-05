@@ -8,13 +8,16 @@ import session from "express-session";
 // const bodyParser = require("body-parser");
 import bodyParser from "body-parser";
 // const MongoDBStore = require("connect-mongodb-session")(session);
-import MongoDBStore from "connect-mongodb-session";
+import connectMongoDBSession from "connect-mongodb-session";
 import connectDB from "./db/connect.js";
 import storeLocals from "./middleware/storeLocals.mjs";
 import sessionRoutes from "./routes/sessionRoutes.mjs";
-
 // require("dotenv").config(); // Load environment variables from .env file
 import "dotenv/config";
+// app.use(require("connect-flash")());
+import flash from "connect-flash";
+import passport from "passport";
+import passportInit from "./passport/passportInit.mjs";
 
 const app = express();
 
@@ -23,8 +26,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 const url = process.env.MONGO_URI;
 
-const MongoDBStoreInstance = MongoDBStore(session);
-const store = new MongoDBStoreInstance({
+const MongoDBStore = connectMongoDBSession(session);
+const store = new MongoDBStore({
   uri: url,
   collection: "mySessions",
 });
@@ -48,11 +51,15 @@ if (app.get("env") === "production") {
 app.use(session(sessionParams));
 
 // Flash messaging setup
-// app.use(require("connect-flash")());
-import flash from "connect-flash";
 app.use(flash());
 // app.use(require("./middleware/storeLocals.mjs"));
 app.use(storeLocals);
+
+// Initialize passport
+passportInit();
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.get("/", (req, res) => {
   res.render("index");
 });
