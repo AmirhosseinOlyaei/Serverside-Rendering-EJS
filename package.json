@@ -2,11 +2,11 @@
   "name": "jobs-ejs",
   "version": "1.0.0",
   "description": "serverside-rendering-ejs",
-  "main": "app.js",
+  "main": "app.cjs",
   "type": "module",
   "scripts": {
-    "start": "node app.js",
-    "dev": "nodemon app.js",
+    "start": "node app.cjs",
+    "dev": "nodemon app.cjs",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -22,7 +22,7 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "connect-flash": "^0.1.1",
-    "connect-mongodb-session": "^5.0.0",
+    "connect-mongodb-session": "^2.2.0",
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.4.5",
     "ejs": "^3.1.10",
