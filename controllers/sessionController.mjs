@@ -39,4 +39,11 @@ const logoff = (req, res) => {
   });
 };
 
-export { registerShow, registerDo, logoff };
+const logonShow = (req, res) => {
+  if (req.user) {
+    return res.redirect("/");
+  }
+  res.render("logon");
+};
+
+export { registerShow, registerDo, logoff, logonShow };
