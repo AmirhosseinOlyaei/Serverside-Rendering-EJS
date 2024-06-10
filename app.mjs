@@ -21,7 +21,6 @@ import passportInit from "./passport/passportInit.mjs";
 import auth from "./middleware/auth.mjs";
 import secretWordRouter from "./routes/secretWord.mjs";
 import hostCsrf from "host-csrf";
-import { csrfProtection, addCsrfToken } from "./middleware/csrf.mjs";
 import cookieParser from "cookie-parser";
 
 const app = express();
@@ -62,10 +61,13 @@ if (app.get("env") === "production") {
   sessionParams.cookie.secure = true; // serve secure cookies
 }
 
+// Use session middleware
 app.use(session(sessionParams));
 
 // Flash messaging setup
 app.use(flash());
+
+// Use middleware to store local variables
 // app.use(require("./middleware/storeLocals.mjs"));
 app.use(storeLocals); // Middleware to store local variables
 
@@ -94,8 +96,6 @@ const csrfOptions = {
 const csrfMiddleware = hostCsrf(csrfOptions);
 // Use CSRF middleware after cookie parser and body parser but before routes
 app.use(csrfMiddleware);
-app.use(csrfProtection);
-app.use(addCsrfToken);
 
 // Routes
 app.get("/", (req, res) => {
