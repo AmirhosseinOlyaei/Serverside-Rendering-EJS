@@ -21,6 +21,7 @@ import passportInit from "./passport/passportInit.mjs";
 import auth from "./middleware/auth.mjs";
 import secretWordRouter from "./routes/secretWord.mjs";
 import hostCsrf from "host-csrf";
+// import csrf from "host-csrf";
 import cookieParser from "cookie-parser";
 
 const app = express();
@@ -89,6 +90,12 @@ const csrfOptions = {
     httpOnly: true,
     secure: app.get("env") === "production",
     sameSite: "Strict",
+  },
+  middleware: (req, res, next) => {
+    const token = req.csrfToken();
+    console.log("CSRF Token:", token); // Add this line
+    res.cookie("csrf-token", token, csrfOptions.cookieParams);
+    next();
   },
 };
 

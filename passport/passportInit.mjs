@@ -6,6 +6,7 @@ import User from "../models/User.mjs";
 const passportInit = () => {
   // Use the local strategy for authentication
   passport.use(
+    "local",
     new LocalStrategy(
       { usernameField: "email", passwordField: "password" },
       async (email, password, done) => {
