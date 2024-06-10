@@ -128,6 +128,8 @@ app.use((err, req, res, next) => {
   console.log(err);
 });
 
+export default app;
+
 const port = process.env.PORT || 3000;
 
 const start = async () => {

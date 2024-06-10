@@ -1,11 +1,11 @@
 // middleware/csrf.mjs
-import csurf from "csurf";
+import csrf from "csurf";
 
 // Initialize CSRF middleware
-const csrfProtection = csurf({ cookie: true });
+const csrfProtection = csrf({ cookie: true });
 
 // Middleware to add CSRF token to response locals
-const addCsrfToken = (req, res, next) => {
+const addCsrfToken = (app) => (req, res, next) => {
   res.locals.csrfToken = req.csrfToken();
   next();
 };
