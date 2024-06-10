@@ -20,8 +20,8 @@ import passport from "passport";
 import passportInit from "./passport/passportInit.mjs";
 import auth from "./middleware/auth.mjs";
 import secretWordRouter from "./routes/secretWord.mjs";
-import hostCsrf from "host-csrf";
-// import csrf from "host-csrf";
+// import hostCsrf from "host-csrf";
+import csrf from "host-csrf";
 import cookieParser from "cookie-parser";
 
 const app = express();
@@ -68,14 +68,14 @@ app.use(session(sessionParams));
 // Flash messaging setup
 app.use(flash());
 
-// Use middleware to store local variables
-// app.use(require("./middleware/storeLocals.mjs"));
-app.use(storeLocals); // Middleware to store local variables
-
 // Initialize passport
 passportInit();
 app.use(passport.initialize());
 app.use(passport.session());
+
+// Use middleware to store local variables
+// app.use(require("./middleware/storeLocals.mjs"));
+app.use(storeLocals); // Middleware to store local variables
 
 // CSRF protection middleware
 const csrfOptions = {
@@ -92,7 +92,8 @@ const csrfOptions = {
     sameSite: "Strict",
   },
   middleware: (req, res, next) => {
-    const token = req.csrfToken();
+    // const token = req.csrfToken();
+    const token = csrf.token(req, res);
     console.log("CSRF Token:", token); // Add this line
     res.cookie("csrf-token", token, csrfOptions.cookieParams);
     next();
@@ -100,7 +101,7 @@ const csrfOptions = {
 };
 
 // Apply CSRF protection middleware
-const csrfMiddleware = hostCsrf(csrfOptions);
+const csrfMiddleware = csrf(csrfOptions);
 // Use CSRF middleware after cookie parser and body parser but before routes
 app.use(csrfMiddleware);
 

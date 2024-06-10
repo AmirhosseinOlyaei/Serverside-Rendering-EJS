@@ -14,9 +14,9 @@ router.get("/", (req, res) => {
 // POST route to update the secret word
 router.post("/", (req, res) => {
   const { secretWord } = req.body;
-  if (secretWord.toUpperCase()[0] === "P") {
+  if (secretWord.toUpperCase()[0] === "J") {
     req.flash("error", "That word won't work!");
-    req.flash("error", "You can't use words that start with 'P'.");
+    req.flash("error", "You can't use words that start with 'J'.");
   } else {
     req.session.secretWord = secretWord;
     req.flash("info", "The secret word was changed.");

@@ -3,7 +3,7 @@
     <%- include("partials/header.ejs") %>
 
         <form method="POST">
-            <input type="hidden" name="_csrf_token" value="<%= csrf_token %>" /> <!-- Add CSRF token -->
+            <input type="hidden" name="_csrf" value="<%= _csrf %>" /> <!-- Add CSRF token -->
             <div>
                 <label name="name">Enter your name:</label>
                 <input name="name" />

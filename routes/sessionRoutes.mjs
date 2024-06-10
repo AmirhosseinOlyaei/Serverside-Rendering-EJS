@@ -25,7 +25,13 @@ router
       successRedirect: "/",
       failureRedirect: "/sessions/logon",
       failureFlash: true,
-    })
+    }),
+    (req, res) => {
+      // CSRF token refresh
+      csrf.refresh(req, res); // Refresh CSRF token
+      // Redirect to the success route
+      res.redirect("/");
+    }
   ); // POST request to handle user logon
 
 // Route for user logoff
