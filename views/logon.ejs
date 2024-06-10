@@ -1,6 +1,9 @@
+<!-- views/logon.ejs -->
 <%- include("partials/head.ejs") %>
     <%- include("partials/header.ejs") %>
+
         <form method="POST">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>" /> <!-- Add CSRF token -->
             <div>
                 <label name="email">Enter your email:</label>
                 <input name="email" />
@@ -16,4 +19,5 @@
                 </a>
             </div>
         </form>
+
         <%- include("partials/footer.ejs") %>
