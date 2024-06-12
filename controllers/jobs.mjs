@@ -2,6 +2,7 @@
 import Job from "../models/Job.mjs";
 import parseVErr from "../util/parseValidationErrs.mjs";
 
+// Retrieve all jobs for the logged-in user
 const getJobs = async (req, res) => {
   try {
     const jobs = await Job.find({ createdBy: req.user._id }).sort({
@@ -14,17 +15,20 @@ const getJobs = async (req, res) => {
   }
 };
 
+// Render form for creating a new job
 const getNewJob = (req, res) => {
-  res.render("job");
+  res.render("job", { job: {}, errors: [] });
 };
 
+// Handle job creation
 const postNewJob = async (req, res) => {
   const newJob = new Job({ ...req.body, createdBy: req.user._id });
   try {
     await newJob.save();
+    req.flash("success", "Job created successfully!");
     res.redirect("/jobs");
   } catch (err) {
-    if (err.constructor.name === "ValidationError") {
+    if (err.name === "ValidationError") {
       parseVErr(err, req);
     } else {
       req.flash("error", "Error creating job.");
@@ -33,12 +37,17 @@ const postNewJob = async (req, res) => {
   }
 };
 
+// Render form for editing a job
 const getEditJob = async (req, res) => {
   try {
     const job = await Job.findOne({
       _id: req.params.id,
       createdBy: req.user._id,
     });
+    if (!job) {
+      req.flash("error", "Job not found.");
+      return res.redirect("/jobs");
+    }
     res.render("job", { job });
   } catch (err) {
     req.flash("error", "Error fetching job.");
@@ -46,17 +55,23 @@ const getEditJob = async (req, res) => {
   }
 };
 
+// Handle job update
 const postEditJob = async (req, res) => {
   try {
     const job = await Job.findOne({
       _id: req.params.id,
       createdBy: req.user._id,
     });
+    if (!job) {
+      req.flash("error", "Job not found.");
+      return res.redirect("/jobs");
+    }
     Object.assign(job, req.body);
     await job.save();
+    req.flash("success", "Job updated successfully!");
     res.redirect("/jobs");
   } catch (err) {
-    if (err.constructor.name === "ValidationError") {
+    if (err.name === "ValidationError") {
       parseVErr(err, req);
     } else {
       req.flash("error", "Error updating job.");
@@ -65,12 +80,18 @@ const postEditJob = async (req, res) => {
   }
 };
 
+// Handle job deletion
 const deleteJob = async (req, res) => {
   try {
-    await Job.findOneAndDelete({
+    const job = await Job.findOneAndDelete({
       _id: req.params.id,
       createdBy: req.user._id,
     });
+    if (!job) {
+      req.flash("error", "Job not found or already deleted.");
+      return res.redirect("/jobs");
+    }
+    req.flash("success", "Job deleted successfully!");
     res.redirect("/jobs");
   } catch (err) {
     req.flash("error", "Error deleting job.");

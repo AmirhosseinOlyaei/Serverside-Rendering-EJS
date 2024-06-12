@@ -1,5 +1,5 @@
 // middleware/auth.mjs
-const authMiddleware = (req, res, next) => {
+const ensureAuthenticated = (req, res, next) => {
   if (!req.user) {
     req.flash("error", "You can't access that page before logon.");
     res.redirect("/");
@@ -8,4 +8,4 @@ const authMiddleware = (req, res, next) => {
   }
 };
 
-export default authMiddleware;
+export default ensureAuthenticated;

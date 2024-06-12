@@ -1,6 +1,6 @@
 // routes/jobs.mjs
 import express from "express";
-import { ensureAuthenticated } from "../config/auth.mjs";
+import ensureAuthenticated from "../middleware/auth.mjs";
 import {
   getJobs,
   getNewJob,
