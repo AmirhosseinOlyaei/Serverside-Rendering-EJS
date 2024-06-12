@@ -24,6 +24,17 @@ import secretWordRouter from "./routes/secretWord.mjs";
 import csrf from "host-csrf";
 import cookieParser from "cookie-parser";
 import jobsRouter from "./routes/jobs.mjs";
+import helmet from "helmet";
+app.use(helmet());
+import xss from "xss-clean";
+app.use(xss());
+import rateLimit from "express-rate-limit";
+// Apply rate limiting to all requests
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+});
+app.use(limiter);
 
 const app = express();
 
