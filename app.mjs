@@ -23,6 +23,7 @@ import secretWordRouter from "./routes/secretWord.mjs";
 // import hostCsrf from "host-csrf";
 import csrf from "host-csrf";
 import cookieParser from "cookie-parser";
+import jobsRouter from "./routes/jobs.mjs";
 
 const app = express();
 
@@ -104,6 +105,12 @@ const csrfOptions = {
 const csrfMiddleware = csrf(csrfOptions);
 // Use CSRF middleware after cookie parser and body parser but before routes
 app.use(csrfMiddleware);
+
+// Require auth middleware for /jobs routes
+app.use("/jobs", auth);
+
+// Require jobs router
+app.use("/jobs", jobsRouter);
 
 // Routes
 app.get("/", (req, res) => {
