@@ -2,11 +2,26 @@
 <%- include("partials/head.ejs") %>
     <%- include("partials/header.ejs") %>
 
-        <% if (user) { %>
-            <a href="/secretWord">Click this link to view/change the secret word.</a>
-            <% } else { %>
-                <a href="/sessions/logon">Click this link to logon.</a>
-                <a href="/sessions/register">Click this link to register.</a>
-                <% } %>
+        <div class="container">
+            <% if (user) { %>
+                <p>
+                    <a href="/secretWord">Click this link to view/change the secret word.</a>
+                </p>
+                <p>
+                    <a href="/jobs">View Job Listings</a>
+                </p>
+                <p>
+                    <a href="/jobs/new">Create New Job</a>
+                </p>
+                <% } else { %>
+                    <h2>Welcome, Guest!</h2>
+                    <p>
+                        <a href="/sessions/logon">Click this link to logon.</a>
+                    </p>
+                    <p>
+                        <a href="/sessions/register">Click this link to register.</a>
+                    </p>
+                    <% } %>
+        </div>
 
-                    <%- include("partials/footer.ejs") %>
+        <%- include("partials/footer.ejs") %>
