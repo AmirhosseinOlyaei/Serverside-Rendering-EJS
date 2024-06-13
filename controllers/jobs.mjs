@@ -26,6 +26,9 @@ const getNewJob = (req, res) => {
 
 // Function to handle new job creation
 const postNewJob = async (req, res) => {
+  console.log("CSRF Token Submitted:", req.body._csrf);
+  console.log("CSRF Token in Cookie:", req.cookies["csrf-token"]);
+
   const newJob = new Job({ ...req.body, createdBy: req.user._id });
   try {
     await newJob.save();

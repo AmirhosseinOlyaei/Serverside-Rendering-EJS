@@ -103,8 +103,8 @@ const csrfOptions = {
   },
   middleware: (req, res, next) => {
     const token = csrf.token(req, res);
-    console.log("CSRF Token:", token);
     res.cookie("csrf-token", token, csrfOptions.cookieParams);
+    res.locals._csrf = token;
     next();
   },
 };
@@ -112,6 +112,10 @@ const csrfOptions = {
 // Apply CSRF protection middleware
 const csrfMiddleware = csrf(csrfOptions);
 app.use(csrfMiddleware);
+app.use((req, res, next) => {
+  console.log("Generated CSRF Token:", req.cookies["csrf-token"]);
+  next();
+});
 
 // Routes and middleware setup
 app.use("/jobs", auth); // Require auth middleware for /jobs routes
