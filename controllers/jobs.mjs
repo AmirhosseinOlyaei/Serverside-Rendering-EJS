@@ -1,13 +1,14 @@
 // controllers/jobs.mjs
 import Job from "../models/Job.mjs";
 import parseVErr from "../util/parseValidationErrs.mjs";
+import csrf from "host-csrf";
 
 const getJobs = async (req, res) => {
   try {
     const jobs = await Job.find({ createdBy: req.user._id }).sort({
       createdAt: -1,
     });
-    res.render("jobs", { jobs, _csrf: req.csrfToken() });
+    res.render("jobs", { jobs, _csrf: req.csrfToken });
   } catch (err) {
     req.flash("error", "Error fetching jobs.");
     res.redirect("/jobs");
@@ -15,7 +16,7 @@ const getJobs = async (req, res) => {
 };
 
 const getNewJob = (req, res) => {
-  res.render("job", { _csrf: req.csrfToken() });
+  res.render("job", { job: null, _csrf: req.csrfToken() });
 };
 
 const postNewJob = async (req, res) => {
@@ -32,7 +33,7 @@ const postNewJob = async (req, res) => {
     res.render("job", {
       job: newJob,
       errors: req.flash("error"),
-      _csrf: req.csrfToken(),
+      _csrf: req.csrfToken,
     });
   }
 };
@@ -43,7 +44,7 @@ const getEditJob = async (req, res) => {
       _id: req.params.id,
       createdBy: req.user._id,
     });
-    res.render("job", { job, _csrf: req.csrfToken() });
+    res.render("job", { job, _csrf: req.csrfToken });
   } catch (err) {
     req.flash("error", "Error fetching job.");
     res.redirect("/jobs");
@@ -68,7 +69,7 @@ const postEditJob = async (req, res) => {
     res.render("job", {
       job: req.body,
       errors: req.flash("error"),
-      _csrf: req.csrfToken(),
+      _csrf: req.csrfToken,
     });
   }
 };
