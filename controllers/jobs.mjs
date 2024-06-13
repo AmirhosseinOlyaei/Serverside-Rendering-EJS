@@ -8,7 +8,9 @@ const getJobs = async (req, res) => {
     const jobs = await Job.find({ createdBy: req.user._id }).sort({
       createdAt: -1,
     });
-    res.render("jobs", { jobs, _csrf: req.csrfToken() }); // Pass _csrf to the view
+    // Retrieve CSRF token from cookies
+    const csrfToken = req.cookies["csrf-token"];
+    res.render("jobs", { jobs, _csrf: csrfToken }); // Pass _csrf to the view
   } catch (err) {
     req.flash("error", "Error fetching jobs.");
     res.redirect("/jobs");
@@ -17,7 +19,9 @@ const getJobs = async (req, res) => {
 
 // Function to render new job form
 const getNewJob = (req, res) => {
-  res.render("job", { job: {}, _csrf: req.csrfToken() }); // Pass _csrf to the view
+  // Retrieve CSRF token from cookies
+  const csrfToken = req.cookies["csrf-token"];
+  res.render("job", { job: {}, _csrf: csrfToken }); // Pass _csrf to the view
 };
 
 // Function to handle new job creation
@@ -32,10 +36,12 @@ const postNewJob = async (req, res) => {
     } else {
       req.flash("error", "Error creating job.");
     }
+    // Retrieve CSRF token from cookies
+    const csrfToken = req.cookies["csrf-token"];
     res.render("job", {
       job: newJob,
       errors: req.flash("error"),
-      _csrf: req.csrfToken(), // Pass _csrf to the view
+      _csrf: csrfToken, // Pass _csrf to the view
     });
   }
 };
@@ -47,7 +53,9 @@ const getEditJob = async (req, res) => {
       _id: req.params.id,
       createdBy: req.user._id,
     });
-    res.render("job", { job, _csrf: req.csrfToken() }); // Pass _csrf to the view
+    // Retrieve CSRF token from cookies
+    const csrfToken = req.cookies["csrf-token"];
+    res.render("job", { job, _csrf: csrfToken }); // Pass _csrf to the view
   } catch (err) {
     req.flash("error", "Error fetching job.");
     res.redirect("/jobs");
@@ -70,10 +78,12 @@ const postEditJob = async (req, res) => {
     } else {
       req.flash("error", "Error updating job.");
     }
+    // Retrieve CSRF token from cookies
+    const csrfToken = req.cookies["csrf-token"];
     res.render("job", {
       job: req.body,
       errors: req.flash("error"),
-      _csrf: req.csrfToken(), // Pass _csrf to the view
+      _csrf: csrfToken, // Pass _csrf to the view
     });
   }
 };
