@@ -16,7 +16,7 @@ const getJobs = async (req, res) => {
 };
 
 const getNewJob = (req, res) => {
-  res.render("job", { job: null, _csrf: req.csrfToken() });
+  res.render("job", { job: {}, csrfToken: req.csrfToken });
 };
 
 const postNewJob = async (req, res) => {
