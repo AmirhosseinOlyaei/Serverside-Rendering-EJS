@@ -141,7 +141,7 @@ app.use((err, req, res, next) => {
   if (err.code === "EBADCSRFTOKEN") {
     console.log("CSRF error:", err);
     req.flash("error", "Invalid CSRF token.");
-    res.redirect("back");
+    return res.redirect("back"); // Add return statement here
   } else {
     next(err);
     res.status(500).send(err.message);

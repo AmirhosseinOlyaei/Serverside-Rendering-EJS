@@ -1,7 +1,8 @@
 <!-- views/jobs.ejs -->
 <%- include("partials/header") %>
     <h2>Jobs List</h2>
-    <!-- <a href="/jobs/new"><button type="button">Add New Job</button></a> -->
+    <a href="/jobs/new"><button type="button">Add New Job</button></a>
+    <h2>Jobs List</h2>
     <table id="jobs-table">
         <tr id="jobs-table-header">
             <th>Company</th>
@@ -22,9 +23,7 @@
                         <%= job.status %>
                     </td>
                     <td>
-                        <a href="/jobs/edit/<%= job._id %>">
-                            <button type="button">Edit</button>
-                        </a>
+                        <a href="/jobs/edit/<%= job._id %>"><button type="button">Edit</button></a>
                     </td>
                     <td>
                         <form method="POST" action="/jobs/delete/<%= job._id %>" style="display: inline">
@@ -40,4 +39,5 @@
                         </tr>
                         <% } %>
     </table>
+
     <%- include("partials/footer") %>
