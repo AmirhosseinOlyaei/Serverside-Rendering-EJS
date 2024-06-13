@@ -22,18 +22,18 @@ import rateLimit from "express-rate-limit";
 
 const app = express();
 
+// Security middlewares
 app.use(helmet());
-
 app.use(xss());
 
-// Apply rate limiting to all requests
+// Rate limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // limit each IP to 100 requests per windowMs
 });
 app.use(limiter);
 
-// Setting view engine
+// Set view engine
 app.set("view engine", "ejs");
 
 // Middleware for parsing form data
@@ -51,22 +51,26 @@ const store = new MongoDBStore({
 
 // Handle MongoDB session store errors
 store.on("error", function (error) {
-  console.log(error);
+  console.error(error);
 });
 
 // Session parameters configuration
 const sessionParams = {
   secret: process.env.SESSION_SECRET,
-  resave: false, // Set to false unless you need to resave session
-  saveUninitialized: false, // Set to false unless you need to save uninitialized session
+  resave: false,
+  saveUninitialized: false,
   store: store,
-  cookie: { secure: false, sameSite: "strict", httpOnly: true },
+  cookie: {
+    secure: app.get("env") === "production", // secure in production
+    sameSite: "strict",
+    httpOnly: true,
+  },
 };
 
-// Session cookie security for production
+// Trust proxy for secure cookies in production
 if (app.get("env") === "production") {
-  app.set("trust proxy", 1); // trust first proxy
-  sessionParams.cookie.secure = true; // serve secure cookies
+  app.set("trust proxy", 1);
+  sessionParams.cookie.secure = true;
 }
 
 // Use session middleware
@@ -107,30 +111,24 @@ const csrfOptions = {
 
 // Apply CSRF protection middleware
 const csrfMiddleware = csrf(csrfOptions);
-
 app.use(csrfMiddleware);
 
-// Require auth middleware for /jobs routes
-app.use("/jobs", auth);
+// Routes and middleware setup
+app.use("/jobs", auth); // Require auth middleware for /jobs routes
+app.use("/jobs", jobsRouter); // Require jobs router
 
-// Require jobs router
-app.use("/jobs", jobsRouter);
-
-// Routes
+// Define routes
 app.get("/", (req, res) => {
   res.render("index");
 });
 app.use("/sessions", sessionRoutes);
-
-// Secret word handling
 app.use("/secretWord", auth, secretWordRouter);
 
 // Handle CSRF errors
 app.use((err, req, res, next) => {
   if (err.code === "EBADCSRFTOKEN") {
-    console.log("CSRF error:", err);
+    console.error("CSRF error:", err);
     req.flash("error", "Invalid CSRF token.");
-    // Check if headers have already been sent
     if (res.headersSent) {
       return next(err);
     } else {
@@ -138,19 +136,21 @@ app.use((err, req, res, next) => {
     }
   } else {
     next(err);
-    res.status(500).send(err.message);
   }
 });
 
+// Handle 404 errors
 app.use((req, res) => {
   res.status(404).send(`That page (${req.url}) was not found.`);
 });
 
+// Handle other errors
 app.use((err, req, res, next) => {
+  console.error(err);
   res.status(500).send(err.message);
-  console.log(err);
 });
 
+// Start the server
 export default app;
 
 const port = process.env.PORT || 3000;
@@ -162,7 +162,7 @@ const start = async () => {
       console.log(`Server is listening on port ${port}...`)
     );
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
