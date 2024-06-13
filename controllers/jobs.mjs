@@ -2,22 +2,25 @@
 import Job from "../models/Job.mjs";
 import parseVErr from "../util/parseValidationErrs.mjs";
 
+// Function to fetch and render jobs
 const getJobs = async (req, res) => {
   try {
     const jobs = await Job.find({ createdBy: req.user._id }).sort({
       createdAt: -1,
     });
-    res.render("jobs", { jobs, csrfToken: req.csrfToken() }); // Pass csrfToken to the view
+    res.render("jobs", { jobs, _csrf: req.csrfToken() }); // Pass _csrf to the view
   } catch (err) {
     req.flash("error", "Error fetching jobs.");
     res.redirect("/jobs");
   }
 };
 
+// Function to render new job form
 const getNewJob = (req, res) => {
-  res.render("job", { job: {}, csrfToken: req.csrfToken() }); // Pass csrfToken to the view
+  res.render("job", { job: {}, _csrf: req.csrfToken() }); // Pass _csrf to the view
 };
 
+// Function to handle new job creation
 const postNewJob = async (req, res) => {
   const newJob = new Job({ ...req.body, createdBy: req.user._id });
   try {
@@ -32,24 +35,26 @@ const postNewJob = async (req, res) => {
     res.render("job", {
       job: newJob,
       errors: req.flash("error"),
-      csrfToken: req.csrfToken(), // Pass csrfToken to the view
+      _csrf: req.csrfToken(), // Pass _csrf to the view
     });
   }
 };
 
+// Function to render edit job form
 const getEditJob = async (req, res) => {
   try {
     const job = await Job.findOne({
       _id: req.params.id,
       createdBy: req.user._id,
     });
-    res.render("job", { job, csrfToken: req.csrfToken() }); // Pass csrfToken to the view
+    res.render("job", { job, _csrf: req.csrfToken() }); // Pass _csrf to the view
   } catch (err) {
     req.flash("error", "Error fetching job.");
     res.redirect("/jobs");
   }
 };
 
+// Function to handle job update
 const postEditJob = async (req, res) => {
   try {
     const job = await Job.findOne({
@@ -68,11 +73,12 @@ const postEditJob = async (req, res) => {
     res.render("job", {
       job: req.body,
       errors: req.flash("error"),
-      csrfToken: req.csrfToken(), // Pass csrfToken to the view
+      _csrf: req.csrfToken(), // Pass _csrf to the view
     });
   }
 };
 
+// Function to handle job deletion
 const deleteJob = async (req, res) => {
   try {
     await Job.findOneAndDelete({
