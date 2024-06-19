@@ -1,6 +1,6 @@
 // util/seed_db.mjs
-import Job from "../models/Job.js";
-import User from "../models/User.js";
+import Job from "../models/Job.mjs";
+import User from "../models/User.mjs";
 import { fakerEN_US as faker } from "@faker-js/faker";
 import { factory } from "factory-bot";
 import { MongooseAdapter } from "factory-bot/dist/adapters/mongoose";
