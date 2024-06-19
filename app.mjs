@@ -19,6 +19,11 @@ import jobsRouter from "./routes/jobs.mjs";
 import helmet from "helmet";
 import xss from "xss-clean";
 import rateLimit from "express-rate-limit";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 
@@ -27,21 +32,22 @@ app.use(helmet());
 app.use(xss());
 
 // Rate limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
-});
-app.use(limiter);
+app.use(
+  rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // limit each IP to 100 requests per windowMs
+  })
+);
+
+// Static files middleware
+app.use(express.static(path.join(__dirname, "public")));
 
 // Set view engine
 app.set("view engine", "ejs");
 
 // Middleware for parsing form data
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json()); // To handle JSON requests
-
-// Middleware for parsing cookies
-app.use(cookieParser(process.env.SESSION_SECRET));
+// app.use(bodyParser.json()); // To handle JSON requests
 
 const MongoDBStore = connectMongoDBSession(session);
 const store = new MongoDBStore({
@@ -57,8 +63,8 @@ store.on("error", function (error) {
 // Session parameters configuration
 const sessionParams = {
   secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false,
+  resave: true,
+  saveUninitialized: true,
   store: store,
   cookie: {
     secure: app.get("env") === "production", // secure in production
@@ -87,33 +93,20 @@ app.use(passport.session());
 // Use middleware to store local variables
 app.use(storeLocals);
 
-// CSRF protection middleware
-const csrfOptions = {
-  protected_operations: ["POST", "PUT", "DELETE", "PATCH"],
-  protected_content_types: [
-    "application/x-www-form-urlencoded",
-    "text/plain",
-    "multipart/form-data",
-  ],
-  development_mode: app.get("env") !== "production",
-  cookieParams: {
+// Middleware for parsing cookies
+app.use(cookieParser(process.env.SESSION_SECRET));
+app.use(express.urlencoded({ extended: false }));
+
+// Simplified CSRF protection middleware for debugging
+app.use((req, res, next) => {
+  const token = csrf.token(req, res);
+  console.log("Generated CSRF Token:", token);
+  res.cookie("csrf-token", token, {
     httpOnly: true,
     secure: app.get("env") === "production",
     sameSite: "Strict",
-  },
-  middleware: (req, res, next) => {
-    const token = csrf.token(req, res);
-    res.cookie("csrf-token", token, csrfOptions.cookieParams);
-    res.locals._csrf = token;
-    next();
-  },
-};
-
-// Apply CSRF protection middleware
-const csrfMiddleware = csrf(csrfOptions);
-app.use(csrfMiddleware);
-app.use((req, res, next) => {
-  console.log("Generated CSRF Token:", req.cookies["csrf-token"]);
+  });
+  res.locals._csrf = token;
   next();
 });
 
