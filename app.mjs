@@ -101,6 +101,22 @@ app.use((req, res, next) => {
   next();
 });
 
+app.get("/multiply", (req, res) => {
+  const first = parseFloat(req.query.first);
+  const second = parseFloat(req.query.second);
+  let result;
+
+  if (isNaN(first) || isNaN(second)) {
+    result = "NaN";
+  } else if (first === null || second === null) {
+    result = "null";
+  } else {
+    result = first * second;
+  }
+
+  res.json({ result });
+});
+
 app.use("/jobs", auth);
 app.use("/jobs", jobsRouter);
 
@@ -143,14 +159,15 @@ if (process.env.NODE_ENV === "test") {
 const start = async () => {
   try {
     await connectDB(mongoURL);
-    app.listen(port, () =>
+    const server = app.listen(port, () =>
       console.log(`Server is listening on port ${port}...`)
     );
+    return server;
   } catch (error) {
     console.error(error);
   }
 };
 
-start();
+const server = await start();
 
-export { app, start };
+export { app, server };

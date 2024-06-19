@@ -1,4 +1,4 @@
-// tests/test_multiply.js
+// tests/test_multiply.mjs
 import { multiply } from "../utils/multiply.js";
 import { expect } from "chai";
 

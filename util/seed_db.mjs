@@ -1,13 +1,15 @@
-// util/seed_db.js
-const Job = require("../models/Job");
-const User = require("../models/User");
-const faker = require("@faker-js/faker").fakerEN_US;
-const FactoryBot = require("factory-bot");
-require("dotenv").config();
+// util/seed_db.mjs
+import Job from "../models/Job.js";
+import User from "../models/User.js";
+import { fakerEN_US as faker } from "@faker-js/faker";
+import { factory } from "factory-bot";
+import { MongooseAdapter } from "factory-bot/dist/adapters/mongoose";
+import { config as dotenvConfig } from "dotenv";
+
+dotenvConfig();
 
 const testUserPassword = faker.internet.password();
-const factory = FactoryBot.factory;
-const factoryAdapter = new FactoryBot.MongooseAdapter();
+const factoryAdapter = new MongooseAdapter();
 factory.setAdapter(factoryAdapter);
 factory.define("job", Job, {
   company: () => faker.company.name(),
@@ -37,4 +39,4 @@ const seed_db = async () => {
   return testUser;
 };
 
-module.exports = { testUserPassword, factory, seed_db };
+export { testUserPassword, factory, seed_db };
