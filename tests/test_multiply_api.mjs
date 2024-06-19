@@ -1,10 +1,11 @@
 // tests/test_multiply_api.mjs
-import chai from "chai";
+import * as chai from "chai";
 import chaiHttp from "chai-http";
 import { app, server } from "../app.mjs";
+
 const { expect } = chai;
 
-chai.use(chaiHttp);
+chai.default.use(chaiHttp);
 
 describe("test multiply api", function () {
   after(() => {
@@ -12,13 +13,12 @@ describe("test multiply api", function () {
   });
 
   it("should multiply two numbers", (done) => {
-    chai
+    chai.default
       .request(app)
       .get("/multiply")
       .query({ first: 7, second: 6 })
-      .send()
       .end((err, res) => {
-        expect(err).to.equal(null);
+        expect(err).to.be.null;
         expect(res).to.have.status(200);
         expect(res).to.have.property("body");
         expect(res.body).to.have.property("result");

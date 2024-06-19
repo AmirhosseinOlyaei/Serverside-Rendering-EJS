@@ -117,6 +117,16 @@ app.get("/multiply", (req, res) => {
   res.json({ result });
 });
 
+// Middleware to set Content-Type header
+app.use((req, res, next) => {
+  if (req.path === "/multiply") {
+    res.set("Content-Type", "application/json");
+  } else {
+    res.set("Content-Type", "text/html");
+  }
+  next();
+});
+
 app.use("/jobs", auth);
 app.use("/jobs", jobsRouter);
 
