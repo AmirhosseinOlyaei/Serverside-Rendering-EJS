@@ -1,7 +1,4 @@
 // controllers/sessionController.mjs
-// const User = require("../models/User");
-// const User = import("../models/User");
-// const parseVErr = require("../util/parseValidationErrs");
 import User from "../models/User.mjs";
 import parseVErr from "../util/parseValidationErrs.mjs";
 
