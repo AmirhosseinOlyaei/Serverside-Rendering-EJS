@@ -144,7 +144,7 @@ app.use("/jobs", jobsRouter);
 app.get("/", (req, res) => {
   res.render("index");
 });
-app.use("/sessions", sessionRoutes);
+app.use("/session", sessionRoutes);
 app.use("/secretWord", auth, secretWordRouter);
 
 app.use((err, req, res, next) => {
