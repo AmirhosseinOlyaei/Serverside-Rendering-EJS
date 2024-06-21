@@ -90,6 +90,17 @@ app.use(storeLocals);
 app.use(cookieParser(process.env.SESSION_SECRET));
 app.use(express.urlencoded({ extended: false }));
 
+// CSRF protection setup with host-csrf
+const csrfProtection = csrf({
+  secret: process.env.SESSION_SECRET,
+  cookie: true,
+  ignoreMethods: ["GET", "HEAD", "OPTIONS"], // Ignore CSRF protection on these methods
+});
+
+// Apply CSRF protection to all routes that need it
+app.use(csrfProtection);
+
+// Middleware to set CSRF token in cookies and locals
 app.use((req, res, next) => {
   const token = csrf.token(req, res);
   res.cookie("csrf-token", token, {
