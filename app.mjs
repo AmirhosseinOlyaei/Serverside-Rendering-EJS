@@ -49,6 +49,7 @@ app.set("view engine", "ejs");
 
 // Middleware for parsing form data
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 const MongoDBStore = connectMongoDBSession(session);
 const store = new MongoDBStore({
