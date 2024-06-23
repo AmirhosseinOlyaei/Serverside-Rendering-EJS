@@ -73,12 +73,48 @@ describe("tests for registration and logon", function () {
       console.log("Response text:", res.text);
       console.log("Response body:", res.body);
 
-      expect(res).to.have.status(200);
+      expect(res).to.have.status(200); // Expecting a success response here
       expect(res.text).to.include("Jobs List");
 
       const newUser = await User.findOne({ email: user.email });
       console.log("New user:", newUser);
       expect(newUser).to.not.be.null;
+    } catch (err) {
+      console.error("Error in test:", err);
+      expect.fail(`Test failed with error: ${err.message}`);
+    }
+  });
+
+  // Test for registration with an existing email
+  it("should not register user with an existing email", async () => {
+    const password = faker.internet.password();
+    const existingUser = await factory.build("user", { password });
+
+    const dataToPost = {
+      name: existingUser.name,
+      email: existingUser.email,
+      password,
+      password1: password,
+      _csrf: csrfToken,
+    };
+
+    // First registration should succeed
+    await chai
+      .request(app)
+      .post("/session/register")
+      .set("Cookie", `csrfToken=${csrfCookie}`)
+      .send(dataToPost);
+
+    // Try to register again with the same email
+    try {
+      const res = await chai
+        .request(app)
+        .post("/session/register")
+        .set("Cookie", `csrfToken=${csrfCookie}`)
+        .send(dataToPost);
+
+      expect(res).to.have.status(400); // Expecting a failure response
+      expect(res.text).to.include("That email address is already registered.");
     } catch (err) {
       console.error("Error in test:", err);
       expect.fail(`Test failed with error: ${err.message}`);
