@@ -26,7 +26,7 @@ describe("tests for registration and logon", function () {
   it("should get the registration page", (done) => {
     chai
       .request(app)
-      .get("/session/register")
+      .get("/sessions/register")
       .end((err, res) => {
         expect(err).to.be.null;
         expect(res).to.have.status(200);
@@ -65,7 +65,7 @@ describe("tests for registration and logon", function () {
     try {
       const res = await chai
         .request(app)
-        .post("/session/register")
+        .post("/sessions/register")
         .set("Cookie", `csrfToken=${csrfCookie}`)
         .send(dataToPost);
 
@@ -101,7 +101,7 @@ describe("tests for registration and logon", function () {
     // First registration should succeed
     await chai
       .request(app)
-      .post("/session/register")
+      .post("/sessions/register")
       .set("Cookie", `csrfToken=${csrfCookie}`)
       .send(dataToPost);
 
@@ -109,7 +109,7 @@ describe("tests for registration and logon", function () {
     try {
       const res = await chai
         .request(app)
-        .post("/session/register")
+        .post("/sessions/register")
         .set("Cookie", `csrfToken=${csrfCookie}`)
         .send(dataToPost);
 
@@ -119,5 +119,14 @@ describe("tests for registration and logon", function () {
       console.error("Error in test:", err);
       expect.fail(`Test failed with error: ${err.message}`);
     }
+  });
+
+  it("should log the user off", async () => {
+    const agent = chai.request.agent(app);
+    await agent
+      .get("/sessions/logoff")
+      .set("Cookie", `csrfToken=${csrfCookie}`)
+      .redirects(0);
+    await agent.close();
   });
 });
