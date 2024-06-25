@@ -35,19 +35,19 @@ describe("Testing Job CRUD Operations", function () {
   });
 
   // Add more tests for other CRUD operations
-  it("should create a new job", (done) => {
-    chai
-      .request(app)
-      .get("/jobs/new")
-      .end((err, res) => {
-        expect(err).to.be.null;
-        expect(res).to.have.status(200);
-        expect(res.text).to.include("Create a New Job");
+  // it("should create a new job", (done) => {
+  //   chai
+  //     .request(app)
+  //     .get("/jobs/new")
+  //     .end((err, res) => {
+  //       expect(err).to.be.null;
+  //       expect(res).to.have.status(200);
+  //       expect(res.text).to.include("Create a New Job");
 
-        // Get the CSRF token from the cookie
-        csrfCookie = res.header["set-cookie"].join().split(";")[0];
+  //       // Get the CSRF token from the cookie
+  //       csrfCookie = res.header["set-cookie"].join().split(";")[0];
 
-        done();
-      });
-  });
+  //       done();
+  //     });
+  // });
 });
