@@ -18,9 +18,9 @@ describe("Testing Job CRUD Operations", function () {
   });
 
   // Close the server after tests
-  after(() => {
-    server.close();
-  });
+  // after(() => {
+  //   server.close();
+  // });
 
   it("should get the index page", (done) => {
     chai
